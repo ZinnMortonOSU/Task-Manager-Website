@@ -4,6 +4,9 @@ import axios from "axios";
 
 import "./index.css";
 
+const url = "http://localhost:5000"
+// const url = "https://task-manager-self.fly.dev";
+
 function Index() {
     const [tasks, setTasks] = useState([]);
     const [fetch_error, setFetchError] = useState(false);
@@ -37,7 +40,7 @@ function Index() {
 
     async function fetchTasks() {
         try {
-            const response = await axios.get(`http://localhost:5000/api/v1/tasks`);
+            const response = await axios.get(`${url}/api/v1/tasks`);
             setTasks(response.data);
         } catch (err) {
             setFetchError(true);
@@ -46,7 +49,7 @@ function Index() {
 
     async function createTask() {
         try {
-            const response = await axios.post("http://localhost:5000/api/v1/tasks", { name: input_ref.current.value });
+            const response = await axios.post(`${url}/api/v1/tasks`, { name: input_ref.current.value });
             fetchTasks();
             input_ref.current.value = "";
             setCreateError(false);
@@ -104,7 +107,7 @@ function Task({ id, name, completed, fetchTasks }) {
 
     async function deleteTask(id) {
         try {
-            const response = await axios.delete(`http://localhost:5000/api/v1/tasks/${id}`);
+            const response = await axios.delete(`${url}/api/v1/tasks/${id}`);
             fetchTasks();
         } catch (err) {
             alert("Error deleting task");
@@ -113,7 +116,7 @@ function Task({ id, name, completed, fetchTasks }) {
 
     async function editTask(id) {
         try {
-            const response = await axios.patch(`http://localhost:5000/api/v1/tasks/${id}`, { name: edit_task_input, completed: completed_checked });
+            const response = await axios.patch(`${url}/api/v1/tasks/${id}`, { name: edit_task_input, completed: completed_checked });
             toggleEdit();
             fetchTasks();
         } catch (err) {
