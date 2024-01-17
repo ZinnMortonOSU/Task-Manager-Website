@@ -7,7 +7,9 @@ const app = express();
 
 const port = 5000;
 
-app.use(cors({ origin: "http://localhost:5173" }));
+const url = "http://localhost:5173";
+
+app.use(cors({ origin: url }));
 
 // External files
 const connectDB = require("./db/connect.js");
@@ -17,6 +19,9 @@ const errorHandler = require("./middleware/error_handler.js");
 // Middleware
 
 app.use(express.json());
+
+// Frontend
+// app.use(express.static("./public"));
 
 // Router
 app.use("/api/v1/tasks", tasks);
@@ -34,7 +39,7 @@ async function start() {
 
         console.log("Connected to database");
 
-        app.listen(port, () => {
+        app.listen(port, "0.0.0.0", () => {
             console.log(`Server listening on port ${port}`);
         });
     } catch (err) {
