@@ -8,12 +8,14 @@ const app = express();
 const port = 5000;
 
 const url = "http://localhost:5173";
+// const url = "https://task-manager-self.fly.dev";
 
 app.use(cors({ origin: url }));
 
 // External files
 const connectDB = require("./db/connect.js");
 const tasks = require("./routes/tasks.js");
+const login = require("./routes/login.js");
 const errorHandler = require("./middleware/error_handler.js");
 
 // Middleware
@@ -23,8 +25,11 @@ app.use(express.json());
 // Frontend
 // app.use(express.static("./public"));
 
-// Router
+// Tasks router
 app.use("/api/v1/tasks", tasks);
+
+// Login router
+app.use("api/v1/login", login);
 
 app.use(errorHandler);
 
