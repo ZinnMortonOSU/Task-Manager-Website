@@ -15,7 +15,6 @@ app.use(cors({ origin: url }));
 // External files
 const connectDB = require("./db/connect.js");
 const tasks = require("./routes/tasks.js");
-const login = require("./routes/login.js");
 const errorHandler = require("./middleware/error_handler.js");
 
 // Middleware
@@ -27,9 +26,6 @@ app.use(express.json());
 
 // Tasks router
 app.use("/api/v1/tasks", tasks);
-
-// Login router
-app.use("api/v1/login", login);
 
 app.use(errorHandler);
 

@@ -36,4 +36,4 @@ const editTask = asyncWrapper(async (req, res) => {
     res.status(StatusCodes.OK).json(edited_task);
 });
 
-module.exports = { getAllTasks, createTask, deleteTask, editTask };
+module.exports = {  getAllTasks, createTask, deleteTask, editTask };
