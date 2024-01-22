@@ -1,11 +1,13 @@
 const mongoose = require("mongoose");
 
-const task_schema = mongoose.Schema(
+const task_schema = new mongoose.Schema(
     {
         name: {
             type: String,
             required: true,
             maxlength: 100,
+            minlength: 1,
+            trim: true
         },
         completed: {
             type: Boolean,

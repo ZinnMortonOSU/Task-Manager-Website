@@ -4,10 +4,91 @@
     box-sizing: border-box;
 }
 
+.nav-bar {
+    width: 100%;
+    height: 4vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #4d4d4d;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.nav-bar > button {
+    font-size: 1rem;
+    height: 100%;
+    width: 6rem;
+    padding: 0 5px;
+    margin-right: 5px;
+}
+
+.nav-bar > button:last-of-type {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-right: 0;
+}
+
+.nav-bar .arrow {
+    font-size: 1rem;
+}
+
+.nav-bar h3,
+.nav-bar h1 {
+    text-shadow: 1px 1px #000000;
+}
+
+.nav-bar > h1 {
+    margin-right: 5px;
+}
+
+.dropdown-content {
+    position: absolute;
+    z-index: -1;
+    top: 4vh;
+    float: right;
+    font-size: 1rem;
+    width: fit-content;
+    background-color: var(--purple);
+    border: 1px solid black;
+    border-bottom-left-radius: 7px;
+}
+
+.dropdown-content h3 {
+    margin: 0 5px;
+    width: auto;
+}
+
+.dropdown-content input {
+    margin: 0 5px;
+    width: 20vw;
+    height: 1.5rem;
+    min-width: 188px;
+}
+
+.dropdown-content button {
+    margin: 5px 0 5px 5px;
+    padding: 5px;
+    display: block;
+}
+
+.dropdown-content .account-status {
+    margin-bottom: 5px;
+}
+
+.dropdown-content .account-success {
+    color: var(--green);
+}
+
+.dropdown-content .account-error {
+    color: var(--red);
+}
+
 .title {
     text-align: center;
     margin: 0 auto;
-    margin-top: 0.2rem;
+    margin-top: 4vh;
     text-decoration: underline;
     text-underline-offset: 0.7rem;
 }
@@ -85,7 +166,7 @@ textarea {
 
 .completed-task h3 {
     text-decoration: line-through;
-    color: #18ff8f;
+    color: var(--green);
 }
 
 .edit-task {
@@ -100,7 +181,7 @@ textarea {
 
 .error-text {
     text-align: center;
-    color: #d5573b;
+    color: var(--red);
 }
 
 .error-text-div {
@@ -138,8 +219,4 @@ textarea {
         margin-right: 5px;
         width: 4rem;
     }
-
-    /* .error-text {
-        font-size: 1rem;
-    } */
 }
