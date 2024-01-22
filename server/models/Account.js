@@ -16,6 +16,7 @@ const account_schema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
     },
     { collection: "Accounts" }
 );

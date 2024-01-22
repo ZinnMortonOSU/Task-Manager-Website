@@ -32,18 +32,26 @@ const login = asyncWrapper(async (req, res) => {
     }
 });
 
-const getAllTasks = asyncWrapper(async (req, res) => {
-    const all_tasks = await Task.find({});
+const getUsersTasks = asyncWrapper(async (req, res) => {
+    const acc = await Account.findOne({ _id: req.user.acc_id });
+    const all_tasks = await Task.find({ _id: { $in: acc.tasks } });
     res.status(StatusCodes.OK).json(all_tasks);
 });
 
 const createTask = asyncWrapper(async (req, res) => {
     const new_task = await Task.create(req.body);
+    await Account.findByIdAndUpdate(req.user.acc_id, { $push: { tasks: new_task._id } });
     res.status(StatusCodes.OK).json(new_task);
 });
 
 const deleteTask = asyncWrapper(async (req, res) => {
+    const acc = await Account.findOne({ _id: req.user.acc_id });
+
     const { id } = req.params;
+
+    if (!acc.tasks.includes(id)) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ err: "Cannot delete another user's task" });
+    }
 
     const deleted_task = await Task.findOneAndDelete({ _id: id });
 
@@ -55,7 +63,13 @@ const deleteTask = asyncWrapper(async (req, res) => {
 });
 
 const editTask = asyncWrapper(async (req, res) => {
+    const acc = await Account.findOne({ _id: req.user.acc_id });
+
     const { id } = req.params;
+
+    if (!acc.tasks.includes(id)) {
+        return res.status(StatusCodes.UNAUTHORIZED).json({ err: "Cannot edit another user's task" });
+    }
 
     const edited_task = await Task.findOneAndUpdate({ _id: id }, req.body, { new: true, runValidators: true });
 
@@ -66,4 +80,4 @@ const editTask = asyncWrapper(async (req, res) => {
     res.status(StatusCodes.OK).json(edited_task);
 });
 
-module.exports = { signup, login, getAllTasks, createTask, deleteTask, editTask };
+module.exports = { signup, login, getUsersTasks, createTask, deleteTask, editTask };

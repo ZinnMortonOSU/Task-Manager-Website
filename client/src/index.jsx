@@ -53,6 +53,8 @@ function Index() {
             localStorage.setItem("token", response.data.token);
             setIsLoggedIn(true);
             setUsername(jwtDecode(localStorage.getItem("token")).username);
+            console.log(1);
+            await fetchTasks();
         } catch (err) {
             throw err;
         }
@@ -63,6 +65,7 @@ function Index() {
         localStorage.removeItem("token");
         setIsLoggedIn(false);
         setUsername("");
+        fetchTasks();
     }
 
     // Create new account and set token and username. Returns true on success and false otherwise
@@ -72,6 +75,7 @@ function Index() {
             localStorage.setItem("token", response.data.token);
             setIsLoggedIn(true);
             setUsername(jwtDecode(localStorage.getItem("token")).username);
+            fetchTasks();
             return true;
         } catch (err) {
             throw err;
@@ -94,23 +98,36 @@ function Index() {
 
     // Gets all the user's tasks
     async function fetchTasks() {
-        try {
-            const response = await axios.get(`${url}/api/v1/tasks`);
-            setTasks(response.data);
-        } catch (err) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
             setFetchError(true);
+        } else {
+            try {
+                const response = await axios.get(`${url}/api/v1/tasks`, { headers: { authorization: `Bearer ${token}` } });
+                setFetchError(false);
+                setTasks(response.data);
+            } catch (err) {
+                setFetchError(true);
+            }
         }
     }
 
     // Creates a task for the user
     async function createTask() {
-        try {
-            const response = await axios.post(`${url}/api/v1/tasks`, { name: input_ref.current.value });
-            await fetchTasks();
-            input_ref.current.value = "";
-            setCreateError(false);
-        } catch (err) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
             setCreateError(true);
+        } else {
+            try {
+                const response = await axios.post(`${url}/api/v1/tasks`, { name: input_ref.current.value }, { headers: { authorization: `Bearer ${token}` } });
+                await fetchTasks();
+                input_ref.current.value = "";
+                setCreateError(false);
+            } catch (err) {
+                setCreateError(true);
+            }
         }
     }
 
@@ -278,22 +295,34 @@ function Task({ id, name, completed, fetchTasks }) {
 
     // Delete a task
     async function deleteTask(id) {
-        try {
-            await axios.delete(`${url}/api/v1/tasks/${id}`);
-            await fetchTasks();
-        } catch (err) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
             alert("Error deleting task");
+        } else {
+            try {
+                await axios.delete(`${url}/api/v1/tasks/${id}`, { headers: { authorization: `Bearer ${token}` } });
+                await fetchTasks();
+            } catch (err) {
+                alert("Error deleting task");
+            }
         }
     }
 
     // Edit a task
     async function editTask(id) {
-        try {
-            await axios.patch(`${url}/api/v1/tasks/${id}`, { name: edit_task_input, completed: completed_checked });
-            await fetchTasks();
-            toggleEdit();
-        } catch (err) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
             alert("Error modifying task");
+        } else {
+            try {
+                await axios.patch(`${url}/api/v1/tasks/${id}`, { name: edit_task_input, completed: completed_checked }, { headers: { authorization: `Bearer ${token}` } });
+                await fetchTasks();
+                toggleEdit();
+            } catch (err) {
+                alert("Error modifying task");
+            }
         }
     }
 
