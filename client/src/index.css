@@ -186,7 +186,7 @@ textarea {
 
 .error-text-div {
     width: calc(60% + 81px);
-    height: 3rem;
+    height: fit-content;
     background-color: var(--background-color);
     border-radius: 5px;
 }

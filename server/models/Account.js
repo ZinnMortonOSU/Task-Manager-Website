@@ -28,12 +28,11 @@ account_schema.pre("save", async function (next) {
         try {
             const hashed_password = await bcrypt.hash(account.password, 10);
             account.password = hashed_password;
+            next();
         } catch (err) {
-            return next(err);
+            next(err);
         }
     }
-
-    next();
 });
 
 account_schema.methods.comparePassword = async function (password) {

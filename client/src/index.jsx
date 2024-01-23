@@ -53,7 +53,6 @@ function Index() {
             localStorage.setItem("token", response.data.token);
             setIsLoggedIn(true);
             setUsername(jwtDecode(localStorage.getItem("token")).username);
-            console.log(1);
             await fetchTasks();
         } catch (err) {
             throw err;
@@ -101,14 +100,14 @@ function Index() {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            setFetchError(true);
+            setFetchError("Please log in to access tasks");
         } else {
             try {
                 const response = await axios.get(`${url}/api/v1/tasks`, { headers: { authorization: `Bearer ${token}` } });
-                setFetchError(false);
+                setFetchError("");
                 setTasks(response.data);
             } catch (err) {
-                setFetchError(true);
+                setFetchError("Error finding tasks");
             }
         }
     }
@@ -118,15 +117,15 @@ function Index() {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            setCreateError(true);
+            setCreateError("Please log in to create tasks");
         } else {
             try {
                 const response = await axios.post(`${url}/api/v1/tasks`, { name: input_ref.current.value }, { headers: { authorization: `Bearer ${token}` } });
                 await fetchTasks();
                 input_ref.current.value = "";
-                setCreateError(false);
+                setCreateError("");
             } catch (err) {
-                setCreateError(true);
+                setCreateError("Error creating task. Try logging back in or try later");
             }
         }
     }
@@ -153,12 +152,12 @@ function Index() {
                 </div>
                 {create_error ? (
                     <div className="error-text-div">
-                        <h2 className="error-text">Error adding task</h2>
+                        <h2 className="error-text">{create_error}</h2>
                     </div>
                 ) : null}
             </div>
             {/* Fetched tasks */}
-            {fetch_error ? <h2 className="error-text">Error finding tasks</h2> : <ul className="task-list">{task_list_inject}</ul>}
+            {fetch_error ? <h2 className="error-text">{fetch_error}</h2> : <ul className="task-list">{task_list_inject}</ul>}
         </>
     );
 }
@@ -204,13 +203,17 @@ function LoginNav({ is_logged_in, username, login, logout, createAccount }) {
     async function callLogin(login_username, login_password) {
         try {
             await login(login_username, login_password);
-            setLoginError(false);
+            setLoginError("");
             setLoginUsername("");
             setLoginPassword("");
             setSignupUsername("");
             setSignupPassword("");
         } catch (err) {
-            setLoginError(true);
+            if (err.response.status == 401) {
+                setLoginError(err.response.data.message);
+            } else {
+                setLoginError("Error logging in");
+            }
         }
     }
 
@@ -255,7 +258,7 @@ function LoginNav({ is_logged_in, username, login, logout, createAccount }) {
                             <h3>Password</h3>
                             <input value={login_password} onKeyDown={(e) => handleKeyDown(e, callLogin, login_username, login_password)} onChange={(e) => setLoginPassword(e.target.value)}></input>
                             <button onClick={() => callLogin(login_username, login_password)}>Log in</button>
-                            {login_error ? <h3 className="account-status account-error">Error logging in</h3> : null}
+                            {login_error ? <h3 className="account-status account-error">{login_error}</h3> : null}
                         </div>
                     ) : null}
                     {/* Signup dropdown */}
@@ -298,13 +301,19 @@ function Task({ id, name, completed, fetchTasks }) {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            alert("Error deleting task");
+            alert("Please log in to delete tasks");
         } else {
             try {
                 await axios.delete(`${url}/api/v1/tasks/${id}`, { headers: { authorization: `Bearer ${token}` } });
                 await fetchTasks();
             } catch (err) {
-                alert("Error deleting task");
+                if (err.response.status == 401) {
+                    alert("You are not authorized to delete this task");
+                } else if (err.response.status == 404) {
+                    alert("Task not found");
+                } else {
+                    alert("Error deleting task");
+                }
             }
         }
     }
@@ -314,14 +323,20 @@ function Task({ id, name, completed, fetchTasks }) {
         const token = localStorage.getItem("token");
 
         if (!token) {
-            alert("Error modifying task");
+            alert("Please log in to edit tasks");
         } else {
             try {
                 await axios.patch(`${url}/api/v1/tasks/${id}`, { name: edit_task_input, completed: completed_checked }, { headers: { authorization: `Bearer ${token}` } });
                 await fetchTasks();
                 toggleEdit();
             } catch (err) {
-                alert("Error modifying task");
+                if (err.response.status == 401) {
+                    alert("You are not authorized to edit this task");
+                } else if (err.response.status == 404) {
+                    alert("Task not found");
+                } else {
+                    alert("Error modifying task");
+                }
             }
         }
     }
