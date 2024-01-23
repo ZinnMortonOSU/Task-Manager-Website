@@ -30,6 +30,7 @@ textarea {
     border-radius: 5px;
     padding: 0 7px;
     font-size: 1rem;
+    resize: none;
 }
 
 textarea {
