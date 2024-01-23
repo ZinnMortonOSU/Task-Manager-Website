@@ -233,6 +233,7 @@ function LoginNav({ is_logged_in, username, login, logout, createAccount }) {
 
     return (
         <nav className="nav-bar">
+            <a href="https://github.com/ZinnMortonOSU/Task-Manager-Website">Project Github Repo</a>
             {is_logged_in ? (
                 <>
                     {/* If logged in show username and logout */}
